@@ -1,4 +1,4 @@
-# Canadian Change Maker
+# Canadian Change Maker 🇨🇦
 
 **Live site: https://musa-ian.github.io/canadian-change-maker/**
 

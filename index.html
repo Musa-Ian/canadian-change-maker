@@ -1,0 +1,595 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Canadian Change Maker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: a till. Phone: entry and number pad on top, then the answer, then the drawer of bills and coins you tap to mark out. Wide screens: entry on the left, answer and drawer on the right. */
+:root {
+  --bg: #E9EEEC;
+  --surface: #F8FAF9;
+  --tray: #DCE4E1;
+  --ink: #12262B;
+  --muted: #4F6468;
+  --line: #C3CFCB;
+  --accent: #C8102E;
+  --accent-soft: #F7DCE0;
+  --on-accent: #FFFFFF;
+  --warn-bg: #FFE9B8;
+  --warn-ink: #6B4300;
+  --key: #FFFFFF;
+  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-body: "Instrument Sans", system-ui, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1B1F; --surface: #15272C; --tray: #0B1518; --ink: #E6EFEC; --muted: #9BB0B0;
+    --line: #29414A; --accent: #FF6B7D; --accent-soft: #3A1E26; --on-accent: #1A0B0F;
+    --warn-bg: #4A3A12; --warn-ink: #F3D58F; --key: #1D343A; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1B1F; --surface: #15272C; --tray: #0B1518; --ink: #E6EFEC; --muted: #9BB0B0;
+  --line: #29414A; --accent: #FF6B7D; --accent-soft: #3A1E26; --on-accent: #1A0B0F;
+  --warn-bg: #4A3A12; --warn-ink: #F3D58F; --key: #1D343A; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  padding-inline: 16px;
+  padding-block: 24px 56px;
+}
+.wrap { max-width: 1060px; margin: 0 auto; display: grid; gap: 18px; }
+h1 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.8rem, 5.5vw, 2.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  margin: 0;
+  text-wrap: balance;
+}
+.lede { margin: 6px 0 0; color: var(--muted); max-width: 62ch; }
+.layout { display: grid; gap: 18px; align-items: start; }
+.right { display: grid; gap: 18px; min-width: 0; }
+@media (min-width: 960px) {
+  .layout { grid-template-columns: 340px minmax(0, 1fr); }
+  .entry { position: sticky; top: 16px; }
+}
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+
+.entry { display: grid; gap: 14px; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; background: var(--tray); border-radius: 10px; padding: 3px; gap: 3px; }
+.seg label { position: relative; }
+.seg input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.seg span { display: block; text-align: center; padding: 10px 8px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; color: var(--muted); }
+.seg input:checked + span { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgb(0 0 0 / 0.18); }
+.seg input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.switch { display: flex; align-items: center; gap: 12px; cursor: pointer; min-height: 44px; }
+.switch input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.switch .track { flex: none; position: relative; width: 48px; height: 28px; border-radius: 999px; background: var(--line); transition: background 0.15s; }
+.switch .track::after { content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: var(--surface); box-shadow: 0 1px 2px rgb(0 0 0 / 0.3); transition: transform 0.15s; }
+.switch input:checked + .track { background: var(--accent); }
+.switch input:checked + .track::after { transform: translateX(20px); }
+.switch input:focus-visible + .track { outline: 2px solid var(--accent); outline-offset: 2px; }
+.swtext { display: grid; line-height: 1.25; }
+.swtext b { font-weight: 600; }
+.swtext small { color: var(--muted); font-size: 0.8rem; }
+.fields { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr)); }
+.lbl { display: block; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 4px; }
+.money { display: flex; align-items: center; border: 1.5px solid var(--line); border-radius: 10px; background: var(--bg); }
+.money.active { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.money.bad { border-color: var(--accent); }
+.money span { padding-left: 12px; color: var(--muted); font-family: var(--font-mono); font-size: 1.2rem; }
+.money input { flex: 1; min-width: 0; border: 0; background: transparent; color: var(--ink); font: 500 1.5rem var(--font-mono); padding: 10px 12px 10px 4px; outline: 0; }
+.err { color: var(--accent); font-size: 0.85rem; margin: 4px 0 0; }
+.err:empty { display: none; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font: 500 0.95rem var(--font-mono); min-height: 40px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+.chip:hover { border-color: var(--accent); }
+.chip:active { background: var(--accent-soft); }
+.chip:focus-visible, .key:focus-visible, .slot:focus-visible, .reset:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.key { min-height: 56px; border: 1px solid var(--line); border-radius: 10px; background: var(--key); color: var(--ink); font: 500 1.55rem var(--font-mono); cursor: pointer; touch-action: manipulation; user-select: none; }
+.key:active { background: var(--accent-soft); border-color: var(--accent); }
+.key.fn { color: var(--muted); font-size: 1.2rem; }
+.key.wide { grid-column: 1 / -1; min-height: 44px; font: 600 0.95rem var(--font-body); }
+
+.result { display: grid; gap: 12px; }
+.total-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 10px 28px; }
+.kicker { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.total { font-family: var(--font-mono); font-weight: 500; font-size: clamp(2.6rem, 10vw, 4rem); line-height: 1.05; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.words { color: var(--muted); margin: 2px 0 0; }
+.stats { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; padding: 0; list-style: none; }
+.stats li { font-size: 0.9rem; color: var(--muted); }
+.stats b { font-family: var(--font-mono); font-weight: 500; font-size: 1.15rem; color: var(--ink); }
+.notices { display: grid; gap: 8px; }
+.notices:empty { display: none; }
+.notice { margin: 0; padding: 10px 12px; border-radius: 8px; background: var(--tray); font-size: 0.9rem; }
+.notice.warn { background: var(--warn-bg); color: var(--warn-ink); }
+
+.sec-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; margin: 0 0 8px; }
+h2 { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; letter-spacing: -0.01em; margin: 0; }
+.outbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; font-size: 0.9rem; color: var(--muted); }
+.outbar b { color: var(--ink); font-weight: 600; }
+.reset { min-height: 36px; padding: 4px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: 600 0.85rem var(--font-body); cursor: pointer; }
+.reset[hidden] { display: none; }
+.tray { background: var(--tray); border-radius: 12px; padding: 10px; display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.slot { appearance: none; font: inherit; color: inherit; text-align: left; cursor: pointer; width: 100%; min-width: 0; touch-action: manipulation; background: var(--surface); border: 1.5px solid var(--line); border-radius: 8px; padding: 12px; display: grid; gap: 10px; align-content: space-between; }
+.slot > span { display: block; }
+.slot.span-all { grid-column: 1 / -1; }
+.slot.on { border-color: var(--accent); }
+.pic { position: relative; display: grid; place-items: center; height: 90px; }
+.pic svg { display: block; max-width: 100%; height: auto; transition: opacity 0.2s; }
+.notes .pic { height: auto; }
+.slot:not(.on) .pic svg { opacity: 0.45; }
+.row { display: flex !important; justify-content: space-between; align-items: center; gap: 8px; }
+.name { font-weight: 600; font-size: 0.9rem; min-width: 0; }
+.count { font-family: var(--font-mono); font-size: 1.15rem; font-weight: 500; padding: 1px 9px; border-radius: 6px; background: var(--tray); color: var(--muted); white-space: nowrap; }
+.slot.on .count { background: var(--accent); color: var(--on-accent); }
+.sub { font-family: var(--font-mono); font-size: 0.82rem; color: var(--muted); }
+.slot.out { background: var(--tray); border-style: dashed; border-color: var(--muted); }
+.slot.out .pic svg { opacity: 0.28; filter: grayscale(1); }
+.slot.out .pic::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top right, transparent calc(50% - 1.5px), var(--accent) calc(50% - 1.5px), var(--accent) calc(50% + 1.5px), transparent calc(50% + 1.5px)); }
+.slot.out .count { background: var(--warn-bg); color: var(--warn-ink); font-size: 0.95rem; font-weight: 600; }
+.svgt { font-family: var(--font-display); font-weight: 800; }
+.fine { color: var(--muted); font-size: 0.85rem; margin: 0; max-width: 72ch; }
+
+@media (min-width: 720px) {
+  .tray { grid-template-columns: repeat(var(--n, 5), minmax(0, 1fr)); }
+  .slot.span-all { grid-column: auto; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<main class="wrap">
+  <header>
+    <h1>Canadian Change Maker</h1>
+    <p class="lede">Enter an amount, or a price and what was paid. Tap any bill or coin you are out of and the answer redoes itself with what is left.</p>
+  </header>
+
+  <div class="layout">
+    <section class="panel entry" aria-label="Entry">
+      <div class="seg" role="radiogroup" aria-label="Mode">
+        <label><input type="radio" name="mode" value="amount" checked><span>Amount</span></label>
+        <label><input type="radio" name="mode" value="change"><span>Make change</span></label>
+      </div>
+
+      <label class="switch" for="roundOn">
+        <input type="checkbox" id="roundOn" checked>
+        <span class="track" aria-hidden="true"></span>
+        <span class="swtext"><b>Round to nearest 5¢</b><small>…1–2 down, 3–7 to 5, 8–9 up</small></span>
+      </label>
+
+      <div id="amountMode">
+        <div class="fields">
+          <div>
+            <label class="lbl" for="amount">Amount</label>
+            <div class="money" id="amountBox"><span>$</span><input id="amount" type="text" inputmode="none" autocomplete="off" value="43.68"></div>
+            <p class="err" id="amountErr"></p>
+          </div>
+        </div>
+      </div>
+
+      <div id="changeMode" hidden>
+        <div class="fields">
+          <div>
+            <label class="lbl" for="price">Price</label>
+            <div class="money" id="priceBox"><span>$</span><input id="price" type="text" inputmode="none" autocomplete="off" value="12.35"></div>
+            <p class="err" id="priceErr"></p>
+          </div>
+          <div>
+            <label class="lbl" for="paid">Customer paid</label>
+            <div class="money" id="paidBox"><span>$</span><input id="paid" type="text" inputmode="none" autocomplete="off" value="20.00"></div>
+            <p class="err" id="paidErr"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="chips" id="chips" aria-label="Quick values"></div>
+
+      <div class="pad" id="pad" aria-label="Number pad">
+        <button type="button" class="key" data-k="1">1</button>
+        <button type="button" class="key" data-k="2">2</button>
+        <button type="button" class="key" data-k="3">3</button>
+        <button type="button" class="key" data-k="4">4</button>
+        <button type="button" class="key" data-k="5">5</button>
+        <button type="button" class="key" data-k="6">6</button>
+        <button type="button" class="key" data-k="7">7</button>
+        <button type="button" class="key" data-k="8">8</button>
+        <button type="button" class="key" data-k="9">9</button>
+        <button type="button" class="key" data-k="." aria-label="Decimal point">.</button>
+        <button type="button" class="key" data-k="0">0</button>
+        <button type="button" class="key fn" data-k="B" aria-label="Backspace">⌫</button>
+        <button type="button" class="key fn wide" data-k="C">Clear</button>
+      </div>
+    </section>
+
+    <div class="right">
+      <section class="panel result" aria-live="polite" aria-label="Result">
+        <div class="total-row">
+          <div>
+            <div class="kicker" id="totalLabel">Amount</div>
+            <div class="total" id="total">$0.00</div>
+            <p class="words" id="words"></p>
+          </div>
+          <ul class="stats" id="stats"></ul>
+        </div>
+        <div class="notices" id="notices"></div>
+      </section>
+
+      <section>
+        <div class="sec-head">
+          <h2>Your drawer</h2>
+          <div class="outbar"><span id="outText"></span><button type="button" class="reset" id="reset" hidden>Reset drawer</button></div>
+        </div>
+        <div class="tray notes" id="notesTray" aria-label="Bills"></div>
+        <div style="height:10px"></div>
+        <div class="tray" id="coinsTray" aria-label="Coins"></div>
+      </section>
+    </div>
+  </div>
+
+  <p class="fine">Bills and coins are simplified drawings, not exact designs. Coin sizes follow the real diameters, from the 18.03 mm dime to the 28 mm toonie. Pennies start marked out because Canada stopped distributing them on February 4, 2013. The rounding switch rounds cash totals to the nearest 5¢. For exact cents, turn rounding off and tap the penny to bring it back. Your drawer and rounding choice are remembered on this device.</p>
+</main>
+
+<script>
+var SC = 3;
+var LEAF = 'M50 4L58 22L72 14L68 36L90 30L79 49L96 56L72 63L76 74L54 68L54 96L46 96L46 68L24 74L28 63L4 56L21 49L10 30L32 36L28 14L42 22Z';
+var METAL = {
+  silver: { c: ['#E6EAED', '#BFC5CA', '#99A0A6'], edge: '#7C858B', ink: '#555F65' },
+  gold: { c: ['#F2DA80', '#D6AF3F', '#AD8524'], edge: '#8B6A17', ink: '#6B4E0C' },
+  copper: { c: ['#DC9363', '#B46B3C', '#8C4F2B'], edge: '#7A4222', ink: '#5A2E14' }
+};
+var DENOMS = [
+  { id: 'n100', type: 'note', cents: 10000, name: '$100 bill', label: '100', c1: '#A8704A', c2: '#7F5033' },
+  { id: 'n50', type: 'note', cents: 5000, name: '$50 bill', label: '50', c1: '#D8483A', c2: '#A92D23' },
+  { id: 'n20', type: 'note', cents: 2000, name: '$20 bill', label: '20', c1: '#4A9A4F', c2: '#2B7236' },
+  { id: 'n10', type: 'note', cents: 1000, name: '$10 bill', label: '10', c1: '#8A5BB0', c2: '#62408A' },
+  { id: 'n5', type: 'note', cents: 500, name: '$5 bill', label: '5', c1: '#3B78C3', c2: '#285797' },
+  { id: 'toonie', type: 'coin', cents: 200, name: 'Toonie ($2)', mm: 28, kind: 'bi', text: '$2', fs: 28 },
+  { id: 'loonie', type: 'coin', cents: 100, name: 'Loonie ($1)', mm: 26.5, kind: 'gold', sides: 11, text: '$1', fs: 38 },
+  { id: 'quarter', type: 'coin', cents: 25, name: 'Quarter (25¢)', mm: 23.88, kind: 'silver', text: '25¢', fs: 27 },
+  { id: 'dime', type: 'coin', cents: 10, name: 'Dime (10¢)', mm: 18.03, kind: 'silver', text: '10¢', fs: 27 },
+  { id: 'nickel', type: 'coin', cents: 5, name: 'Nickel (5¢)', mm: 21.2, kind: 'silver', text: '5¢', fs: 33 },
+  { id: 'penny', type: 'coin', cents: 1, name: 'Penny (1¢)', mm: 19.05, kind: 'copper', text: '1¢', fs: 33 }
+];
+var DEFAULT_OUT = ['penny'];
+
+function toCents(str) {
+  var s = String(str).trim().replace(/[$,\s]/g, '');
+  if (s === '') return { empty: true };
+  if (!/^\d*\.?\d*$/.test(s) || s === '.') return { error: 'Enter numbers only, like 12.35.' };
+  var parts = s.split('.');
+  var w = parts[0], f = parts[1] || '';
+  if (f.length > 2) return { error: 'Use at most two decimal places.' };
+  if (w.length > 7) return { error: 'That amount is too large.' };
+  return { cents: parseInt(w || '0', 10) * 100 + parseInt((f + '00').slice(0, 2), 10) };
+}
+function round5(c) { return Math.round(c / 5) * 5; }
+function fmtMoney(c) {
+  return '$' + (c / 100).toLocaleString('en-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function fmtShort(c) { return c < 100 ? c + '¢' : fmtMoney(c); }
+function plural(n, one, many) { return n.toLocaleString('en-CA') + ' ' + (n === 1 ? one : many); }
+function toWords(c) {
+  var d = Math.floor(c / 100), k = c % 100;
+  if (c === 0) return '0 dollars and 0 cents';
+  var out = [];
+  if (d > 0) out.push(plural(d, 'dollar', 'dollars'));
+  if (k > 0) out.push(plural(k, 'cent', 'cents'));
+  return out.join(' and ');
+}
+
+/* Fewest pieces that make the target from the denominations still in the drawer.
+   avail is sorted largest first. Returns counts by id and how many cents could not be made. */
+function solve(target, avail) {
+  var counts = {};
+  DENOMS.forEach(function (d) { counts[d.id] = 0; });
+  if (!avail.length || target <= 0) return { counts: counts, short: Math.max(target, 0) };
+  var t = target, big = avail[0].cents, CAP = 20000;
+  if (t > CAP + big) {
+    var k = Math.floor((t - CAP) / big);
+    counts[avail[0].id] += k;
+    t -= k * big;
+  }
+  var INF = 1e9, dp = new Int32Array(t + 1).fill(INF), pick = new Int16Array(t + 1).fill(-1);
+  dp[0] = 0;
+  for (var i = 1; i <= t; i++) {
+    for (var j = 0; j < avail.length; j++) {
+      var c = avail[j].cents;
+      if (c <= i && dp[i - c] + 1 < dp[i]) { dp[i] = dp[i - c] + 1; pick[i] = j; }
+    }
+  }
+  var r = t;
+  while (r > 0 && dp[r] >= INF) r--;
+  var made = r;
+  while (r > 0) { var p = pick[r]; counts[avail[p].id]++; r -= avail[p].cents; }
+  return { counts: counts, short: t - made };
+}
+
+function grad(id, cols) {
+  return '<linearGradient id="' + id + '" x1="0.1" y1="0" x2="0.9" y2="1"><stop offset="0" stop-color="' + cols[0] + '"/><stop offset=".5" stop-color="' + cols[1] + '"/><stop offset="1" stop-color="' + cols[2] + '"/></linearGradient>';
+}
+function poly(n, r) {
+  var p = [];
+  for (var i = 0; i < n; i++) {
+    var a = (-90 + i * 360 / n) * Math.PI / 180;
+    p.push((50 + r * Math.cos(a)).toFixed(2) + ',' + (50 + r * Math.sin(a)).toFixed(2));
+  }
+  return p.join(' ');
+}
+function coinText(t, x, y, fs, ink) {
+  return '<text class="svgt" x="' + x + '" y="' + (y + 1.4) + '" text-anchor="middle" dominant-baseline="central" font-size="' + fs + '" fill="#fff" fill-opacity=".6">' + t + '</text>' +
+    '<text class="svgt" x="' + x + '" y="' + y + '" text-anchor="middle" dominant-baseline="central" font-size="' + fs + '" fill="' + ink + '">' + t + '</text>';
+}
+function coinSVG(d) {
+  var px = Math.round(d.mm * SC * 10) / 10;
+  var gid = 'g' + d.id, body = '', defs;
+  if (d.kind === 'bi') {
+    var s = METAL.silver, g = METAL.gold;
+    defs = grad(gid, s.c) + grad(gid + 'i', g.c);
+    body = '<circle cx="50" cy="50" r="48" fill="url(#' + gid + ')" stroke="' + s.edge + '" stroke-width="2"/>' +
+      '<circle cx="50" cy="50" r="33" fill="none" stroke="' + s.edge + '" stroke-width="1.5"/>' +
+      '<circle cx="50" cy="50" r="32" fill="url(#' + gid + 'i)"/>' +
+      coinText(d.text, 50, 52, d.fs, g.ink);
+  } else {
+    var m = METAL[d.kind];
+    defs = grad(gid, m.c);
+    var shape = d.sides
+      ? '<polygon points="' + poly(d.sides, 48) + '" fill="url(#' + gid + ')" stroke="' + m.edge + '" stroke-width="2" stroke-linejoin="round"/>'
+      : '<circle cx="50" cy="50" r="48" fill="url(#' + gid + ')" stroke="' + m.edge + '" stroke-width="2"/>';
+    var ring = d.sides
+      ? '<polygon points="' + poly(d.sides, 40) + '" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="1.6" stroke-linejoin="round"/>'
+      : '<circle cx="50" cy="50" r="40" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="1.6"/>';
+    body = shape + ring +
+      '<path d="' + LEAF + '" transform="translate(43 15) scale(.14)" fill="' + m.ink + '" fill-opacity=".8"/>' +
+      coinText(d.text, 50, 60, d.fs, m.ink);
+  }
+  return '<svg viewBox="0 0 100 100" width="' + px + '" height="' + px + '" role="img" aria-label="' + d.name + '"><defs>' + defs + '</defs>' + body + '</svg>';
+}
+function noteSVG(d) {
+  var gid = 'g' + d.id, cid = 'c' + d.id, waves = '';
+  for (var i = 0; i < 7; i++) {
+    var y = 10 + i * 14;
+    waves += '<path d="M-4 ' + y + ' C 50 ' + (y - 16) + ', 120 ' + (y + 16) + ', 222 ' + (y - 6) + '" fill="none" stroke="#fff" stroke-opacity=".14" stroke-width="1.2"/>';
+  }
+  var big = '$' + d.label;
+  return '<svg viewBox="0 0 218 100" role="img" aria-label="' + d.name + '" style="width:100%;height:auto;display:block">' +
+    '<defs>' + grad(gid, [d.c1, d.c1, d.c2]) + '<clipPath id="' + cid + '"><rect width="218" height="100" rx="6"/></clipPath></defs>' +
+    '<g clip-path="url(#' + cid + ')"><rect width="218" height="100" fill="url(#' + gid + ')"/>' + waves + '</g>' +
+    '<rect x="1" y="1" width="216" height="98" rx="6" fill="none" stroke="#000" stroke-opacity=".25" stroke-width="2"/>' +
+    '<rect x="6" y="6" width="206" height="88" rx="3" fill="none" stroke="#fff" stroke-opacity=".38"/>' +
+    '<rect x="122" y="12" width="40" height="76" rx="20" fill="#fff" fill-opacity=".2" stroke="#fff" stroke-opacity=".6"/>' +
+    '<path d="' + LEAF + '" transform="translate(127 36) scale(.3)" fill="#fff" fill-opacity=".85"/>' +
+    '<text class="svgt" x="14.2" y="65.5" font-size="38" fill="#000" fill-opacity=".22">' + big + '</text>' +
+    '<text class="svgt" x="13" y="64" font-size="38" fill="#fff">' + big + '</text>' +
+    '<text class="svgt" x="206" y="25" text-anchor="end" font-size="15" fill="#fff" fill-opacity=".9">' + d.label + '</text>' +
+    '<text class="svgt" x="206" y="88" text-anchor="end" font-size="15" fill="#fff" fill-opacity=".9">' + d.label + '</text>' +
+    '</svg>';
+}
+
+if (typeof document !== 'undefined') {
+  var $ = function (id) { return document.getElementById(id); };
+  var slots = {};
+  var out = {};
+  var STORE = 'ccm-out-v1';
+  var activeId = 'amount', fresh = true;
+
+  (function loadOut() {
+    var list = DEFAULT_OUT;
+    try {
+      var raw = localStorage.getItem(STORE);
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) list = parsed;
+      }
+    } catch (e) {}
+    list.forEach(function (id) { out[id] = true; });
+  })();
+  function saveOut() {
+    try { localStorage.setItem(STORE, JSON.stringify(Object.keys(out))); } catch (e) {}
+  }
+
+  DENOMS.forEach(function (d) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'slot';
+    b.innerHTML = '<span class="pic">' + (d.type === 'coin' ? coinSVG(d) : noteSVG(d)) + '</span>' +
+      '<span class="row"><span class="name">' + d.name + '</span><span class="count">×0</span></span>' +
+      '<span class="sub"></span>';
+    b.addEventListener('click', function () {
+      if (out[d.id]) delete out[d.id]; else out[d.id] = true;
+      saveOut();
+      update();
+    });
+    slots[d.id] = { el: b, count: b.querySelector('.count'), sub: b.querySelector('.sub'), d: d };
+    $(d.type === 'note' ? 'notesTray' : 'coinsTray').appendChild(b);
+  });
+  (function layout() {
+    ['notesTray', 'coinsTray'].forEach(function (id) {
+      var tray = $(id), n = tray.children.length;
+      tray.style.setProperty('--n', n);
+      if (n % 2 === 1) tray.children[n - 1].classList.add('span-all');
+    });
+  })();
+
+  function setActive(id) {
+    activeId = id;
+    fresh = true;
+    ['amount', 'price', 'paid'].forEach(function (k) { $(k + 'Box').classList.toggle('active', k === id); });
+  }
+  function currentMode() { return document.querySelector('input[name=mode]:checked').value; }
+  function setChips() {
+    var mode = currentMode();
+    var vals = mode === 'amount' ? [45, 375, 1260, 8735] : [500, 1000, 2000, 5000, 10000];
+    var target = mode === 'amount' ? 'amount' : 'paid';
+    var box = $('chips');
+    box.innerHTML = '';
+    if (mode === 'change') {
+      var lab = document.createElement('span');
+      lab.className = 'lbl';
+      lab.style.cssText = 'width:100%;margin:0';
+      lab.textContent = 'Customer paid with';
+      box.appendChild(lab);
+    }
+    vals.forEach(function (c) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chip';
+      b.textContent = fmtMoney(c);
+      b.addEventListener('pointerdown', function (e) { e.preventDefault(); });
+      b.addEventListener('click', function () {
+        $(target).value = (c / 100).toFixed(2);
+        setActive(target);
+        update();
+      });
+      box.appendChild(b);
+    });
+  }
+
+  function pressKey(k) {
+    var inp = $(activeId);
+    var s = inp.value.replace(/[$,\s]/g, '');
+    if (k === 'C') { s = ''; }
+    else if (k === 'B') { s = s.slice(0, -1); }
+    else {
+      if (fresh) s = '';
+      if (k === '.') {
+        if (s.indexOf('.') !== -1) { fresh = false; return; }
+        s = (s === '' ? '0' : s) + '.';
+      } else {
+        var dot = s.indexOf('.');
+        if (dot !== -1 && s.length - dot > 2) { fresh = false; return; }
+        if (dot === -1 && s.length >= 7) { fresh = false; return; }
+        s = (s === '0' ? '' : s) + k;
+      }
+    }
+    inp.value = s;
+    fresh = false;
+    update();
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.key'), function (b) {
+    b.addEventListener('pointerdown', function (e) { e.preventDefault(); });
+    b.addEventListener('click', function () { pressKey(b.getAttribute('data-k')); });
+  });
+  ['amount', 'price', 'paid'].forEach(function (id) {
+    $(id).addEventListener('focus', function () { setActive(id); });
+    $(id).addEventListener('input', function () { fresh = false; update(); });
+  });
+  var ROUND_KEY = 'ccm-round-v1';
+  try { if (localStorage.getItem(ROUND_KEY) === '0') $('roundOn').checked = false; } catch (e) {}
+  $('roundOn').addEventListener('change', function () {
+    try { localStorage.setItem(ROUND_KEY, $('roundOn').checked ? '1' : '0'); } catch (e) {}
+    update();
+  });
+  $('reset').addEventListener('click', function () {
+    out = {};
+    DEFAULT_OUT.forEach(function (id) { out[id] = true; });
+    saveOut();
+    update();
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('input[name=mode]'), function (r) {
+    r.addEventListener('change', function () {
+      setActive(currentMode() === 'amount' ? 'amount' : 'price');
+      setChips();
+      update();
+    });
+  });
+
+  function setErr(boxId, errId, msg) {
+    $(boxId).classList.toggle('bad', !!msg);
+    $(errId).textContent = msg || '';
+  }
+
+  function update() {
+    var mode = currentMode();
+    var availList = DENOMS.filter(function (d) { return !out[d.id]; });
+    var rounding = $('roundOn').checked;
+    var target = 0, notices = [];
+    setErr('amountBox', 'amountErr', ''); setErr('priceBox', 'priceErr', ''); setErr('paidBox', 'paidErr', '');
+    $('amountMode').hidden = mode !== 'amount';
+    $('changeMode').hidden = mode !== 'change';
+    $('totalLabel').textContent = mode === 'amount' ? 'Amount' : 'Change due';
+
+    if (mode === 'amount') {
+      var r = toCents($('amount').value);
+      if (r.error) setErr('amountBox', 'amountErr', r.error);
+      else if (!r.empty) {
+        var c = r.cents;
+        if (rounding && round5(c) !== c) {
+          notices.push({ text: fmtMoney(c) + ' rounds to ' + fmtMoney(round5(c)) + '.' });
+          c = round5(c);
+        }
+        target = c;
+      }
+    } else {
+      var p = toCents($('price').value), q = toCents($('paid').value);
+      if (p.error) setErr('priceBox', 'priceErr', p.error);
+      if (q.error) setErr('paidBox', 'paidErr', q.error);
+      if (!p.error && !q.error && !p.empty && !q.empty) {
+        var owed = rounding ? round5(p.cents) : p.cents;
+        if (owed !== p.cents) notices.push({ text: 'A price of ' + fmtMoney(p.cents) + ' rounds to ' + fmtMoney(owed) + ' for cash.' });
+        if (q.cents < owed) {
+          notices.push({ text: 'Still owed: ' + fmtMoney(owed - q.cents) + '. Ask for more money.', warn: true });
+        } else {
+          target = q.cents - owed;
+          if (rounding) target = round5(target);
+          notices.push({ text: 'Paid ' + fmtMoney(q.cents) + ' for ' + fmtMoney(owed) + '.' });
+        }
+      }
+    }
+
+    var res = solve(target, availList);
+    var counts = res.counts, nb = 0, nc = 0;
+    if (res.short > 0) {
+      notices.push({ text: 'With this drawer you can make ' + fmtMoney(target - res.short) + ', which is ' + fmtMoney(res.short) + ' short. Put a bill or coin back, or ask for different payment.', warn: true });
+    }
+    DENOMS.forEach(function (d) {
+      var s = slots[d.id], n = counts[d.id], isOut = !!out[d.id];
+      s.el.classList.toggle('out', isOut);
+      s.el.classList.toggle('on', n > 0);
+      s.el.setAttribute('aria-pressed', isOut ? 'true' : 'false');
+      s.el.setAttribute('aria-label', d.name + (isOut ? ', out. Tap to put back.' : ', ' + n + ' needed. Tap to mark out.'));
+      s.count.textContent = isOut ? 'OUT' : '×' + n;
+      s.sub.textContent = isOut ? 'tap to put back' : (n > 0 ? '= ' + fmtShort(n * d.cents) : 'not needed');
+      if (d.type === 'note') nb += n; else nc += n;
+    });
+
+    var names = DENOMS.filter(function (d) { return out[d.id]; }).map(function (d) { return d.name.replace(/ \(.*\)/, ''); });
+    $('outText').innerHTML = names.length ? 'Out: <b>' + names.join(', ') + '</b>' : 'Tap any bill or coin you are out of.';
+    var isDefault = names.length === DEFAULT_OUT.length && DEFAULT_OUT.every(function (id) { return out[id]; });
+    $('reset').hidden = isDefault;
+
+    var made = target - res.short;
+    $('total').textContent = fmtMoney(target);
+    $('words').textContent = toWords(target) + ' · ' + target.toLocaleString('en-CA') + '¢';
+    $('stats').innerHTML = '<li><b>' + (nb + nc) + '</b> ' + ((nb + nc) === 1 ? 'piece' : 'pieces') + '</li>' +
+      '<li><b>' + nb + '</b> ' + (nb === 1 ? 'bill' : 'bills') + '</li>' +
+      '<li><b>' + nc + '</b> ' + (nc === 1 ? 'coin' : 'coins') + '</li>';
+    var box = $('notices');
+    box.innerHTML = '';
+    notices.forEach(function (n) {
+      var el = document.createElement('p');
+      el.className = 'notice' + (n.warn ? ' warn' : '');
+      el.textContent = n.text;
+      box.appendChild(el);
+    });
+  }
+
+  setActive('amount');
+  setChips();
+  update();
+} else if (typeof module !== 'undefined') {
+  module.exports = { toCents: toCents, round5: round5, solve: solve, DENOMS: DENOMS, fmtMoney: fmtMoney, toWords: toWords };
+}
+</script>
+
+</body></html>

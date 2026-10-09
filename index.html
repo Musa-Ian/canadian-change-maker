@@ -58,12 +58,13 @@ h1 {
 .layout { display: grid; gap: 18px; align-items: start; }
 .right { display: grid; gap: 18px; min-width: 0; }
 @media (min-width: 960px) {
-  .layout { grid-template-columns: 340px minmax(0, 1fr); }
+  .layout { grid-template-columns: 360px minmax(0, 1fr); }
   .entry { position: sticky; top: 16px; }
 }
 .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
 
 .entry { display: grid; gap: 14px; }
+.entry > *, .fields > * { min-width: 0; }
 .seg { display: grid; grid-template-columns: 1fr 1fr; background: var(--tray); border-radius: 10px; padding: 3px; gap: 3px; }
 .seg label { position: relative; }
 .seg input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
@@ -87,7 +88,7 @@ h1 {
 .money.active { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 .money.bad { border-color: var(--accent); }
 .money span { padding-left: 12px; color: var(--muted); font-family: var(--font-mono); font-size: 1.2rem; }
-.money input { flex: 1; min-width: 0; border: 0; background: transparent; color: var(--ink); font: 500 1.5rem var(--font-mono); padding: 10px 12px 10px 4px; outline: 0; }
+.money input { flex: 1; width: 100%; min-width: 0; border: 0; background: transparent; color: var(--ink); font: 500 1.5rem var(--font-mono); padding: 10px 12px 10px 4px; outline: 0; }
 .err { color: var(--accent); font-size: 0.85rem; margin: 4px 0 0; }
 .err:empty { display: none; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -131,7 +132,10 @@ h2 { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; let
 .notes .pic { height: auto; }
 .slot:not(.on) .pic svg { opacity: 0.45; }
 .row { display: flex !important; justify-content: space-between; align-items: center; gap: 8px; }
-.name { font-weight: 600; font-size: 0.9rem; min-width: 0; }
+.name { font-weight: 600; font-size: 0.9rem; min-width: 0; line-height: 1.25; }
+.meta { display: flex !important; flex-wrap: wrap; align-items: center; gap: 4px 8px; min-width: 0; }
+.slot { gap: 8px; }
+.slot > .pic { margin-bottom: 2px; }
 .count { font-family: var(--font-mono); font-size: 1.15rem; font-weight: 500; padding: 1px 9px; border-radius: 6px; background: var(--tray); color: var(--muted); white-space: nowrap; }
 .slot.on .count { background: var(--accent); color: var(--on-accent); }
 .sub { font-family: var(--font-mono); font-size: 0.82rem; color: var(--muted); }
@@ -403,8 +407,8 @@ if (typeof document !== 'undefined') {
     b.type = 'button';
     b.className = 'slot';
     b.innerHTML = '<span class="pic">' + (d.type === 'coin' ? coinSVG(d) : noteSVG(d)) + '</span>' +
-      '<span class="row"><span class="name">' + d.name + '</span><span class="count">×0</span></span>' +
-      '<span class="sub"></span>';
+      '<span class="name">' + d.name + '</span>' +
+      '<span class="meta"><span class="count">×0</span><span class="sub"></span></span>';
     b.addEventListener('click', function () {
       if (out[d.id]) delete out[d.id]; else out[d.id] = true;
       saveOut();

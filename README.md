@@ -1,6 +1,6 @@
 # Canadian Change Maker 🇨🇦
 
-**Live site: https://musa-ian.github.io/canadian-change-maker/**
+**Live site: https://musa-ian.github.io/change-maker/**
 
 Created by **[Ian Musa](https://github.com/Musa-Ian)**.
 
